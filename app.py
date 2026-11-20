@@ -390,6 +390,11 @@ def inspect_video_metadata(video_path, file_name, file_size_bytes):
 def download_video_from_url(video_url, temp_dir):
     """Download a video from a direct URL, Google Drive share link, or YouTube/yt-dlp URL."""
     clean_url = video_url.strip()
+    if not clean_url.lower().startswith(("http://", "https://")):
+        raise RuntimeError(
+            "Invalid link. Please paste a valid video URL starting with https:// (not an error message)."
+        )
+
     parsed = urllib.parse.urlparse(clean_url)
     host = parsed.netloc.lower()
     is_youtube_or_social = any(
@@ -420,56 +425,69 @@ def download_video_from_url(video_url, temp_dir):
         except Exception:
             cookie_file = None
 
-        # Use cookie-compatible clients when cookies exist, otherwise mobile/embedded fallbacks
-        clients = ["web", "mweb"] if cookie_file else ["ios", "mweb", "tv_embedded"]
-
-        ydl_opts = {
-            "format": "bv*+ba/b",
-            "merge_output_format": "mp4",
-            "outtmpl": out_template,
-            "noplaylist": True,
-            "quiet": True,
-            "no_warnings": True,
-            "geo_bypass": True,
-            "retries": 3,
-            "fragment_retries": 3,
-            "http_headers": {
-                "User-Agent": (
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/131.0.0.0 Safari/537.36"
-                ),
-            },
-            "extractor_args": {
-                "youtube": {
-                    "player_client": clients,
-                }
-            },
-        }
+        # Try cookie-authenticated web clients first, then fall back to cookieless clients
+        attempts = []
         if cookie_file:
-            ydl_opts["cookiefile"] = cookie_file
+            attempts.append((["web", "mweb", "tv"], cookie_file))
+        attempts.append((["tv_embedded", "ios", "android", "mweb"], None))
 
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.extract_info(clean_url, download=True)
-            candidates = [
-                os.path.join(temp_dir, f)
-                for f in os.listdir(temp_dir)
-                if os.path.isfile(os.path.join(temp_dir, f))
-                and not f.endswith(".part")
-                and f != "yt_cookies.txt"
-            ]
-            if candidates:
-                downloaded_path = max(candidates, key=os.path.getsize)
-                safe_name = os.path.basename(downloaded_path)
-                return downloaded_path, safe_name, os.path.getsize(downloaded_path)
+        for clients, active_cookie in attempts:
+            ydl_opts = {
+                "format": "bv*+ba/b",
+                "merge_output_format": "mp4",
+                "outtmpl": out_template,
+                "noplaylist": True,
+                "quiet": True,
+                "no_warnings": True,
+                "geo_bypass": True,
+                "retries": 3,
+                "fragment_retries": 3,
+                "js_runtimes": {"node": {}},
+                "remote_components": ["ejs:github"],
+                "http_headers": {
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/131.0.0.0 Safari/537.36"
+                    ),
+                },
+                "extractor_args": {
+                    "youtube": {
+                        "player_client": clients,
+                    }
+                },
+            }
+            if active_cookie:
+                ydl_opts["cookiefile"] = active_cookie
+
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.extract_info(clean_url, download=True)
+                    candidates = [
+                        os.path.join(temp_dir, f)
+                        for f in os.listdir(temp_dir)
+                        if os.path.isfile(os.path.join(temp_dir, f))
+                        and not f.endswith(".part")
+                        and f != "yt_cookies.txt"
+                    ]
+                    if candidates:
+                        downloaded_path = max(candidates, key=os.path.getsize)
+                        safe_name = os.path.basename(downloaded_path)
+                        return downloaded_path, safe_name, os.path.getsize(downloaded_path)
+            except Exception as exc:
+                yt_error = str(exc)
+                continue
     except ImportError:
-        yt_error = "yt-dlp is not installed. Run: pip install yt-dlp"
+        yt_error = "yt-dlp is not installed. Run: pip install yt-dlp[default]"
     except Exception as exc:
         yt_error = str(exc)
 
     # Do not fall back to raw HTML download for YouTube/social URLs
     if is_youtube_or_social:
-        raise RuntimeError(f"YouTube/web video download failed: {yt_error or 'No playable stream found.'}")
+        raise RuntimeError(
+            f"YouTube/web video download failed: {yt_error or 'No playable stream found.'} "
+            "— Tip: If YouTube blocks this clip on the cloud server, paste a Google Drive share link instead."
+        )
 
     # 2. Direct HTTP/HTTPS video file download (.mp4, .avi, .mov, Google Drive)
     url_basename = os.path.basename(parsed.path)
