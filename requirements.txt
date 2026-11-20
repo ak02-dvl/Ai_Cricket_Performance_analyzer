@@ -1,9 +1,9 @@
 streamlit
 opencv-python-headless
 ultralytics
-mediapipe
+mediapipe==0.10.21
+numpy<2
 reportlab
 plotly
-numpy
 pandas
 Pillow
