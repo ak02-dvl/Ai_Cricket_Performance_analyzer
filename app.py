@@ -16,6 +16,8 @@ import urllib.parse
 import urllib.request
 from copy import deepcopy
 
+import shutil
+import subprocess
 import base64
 import cv2
 import streamlit as st
@@ -299,6 +301,64 @@ def navigate_to(section_name):
     st.session_state["active_nav"] = section_name
 
 
+def create_browser_preview_video(video_path):
+    """Create an H.264 MP4 preview for st.video() without modifying the original file."""
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        return video_path
+    try:
+        fourcc_int = int(cap.get(cv2.CAP_PROP_FOURCC))
+        codec = "".join([chr((fourcc_int >> 8 * i) & 0xFF) for i in range(4)]).strip().lower()
+    finally:
+        cap.release()
+
+    # Already H.264 — browsers play it natively without re-encoding
+    if codec in ("avc1", "h264", "x264") and video_path.lower().endswith((".mp4", ".mov")):
+        return video_path
+
+    preview_path = os.path.join(
+        os.path.dirname(video_path),
+        f"preview_{os.path.splitext(os.path.basename(video_path))[0]}.mp4",
+    )
+    if os.path.isfile(preview_path) and os.path.getsize(preview_path) > 0:
+        return preview_path
+
+    ffmpeg_bin = shutil.which("ffmpeg")
+    if not ffmpeg_bin:
+        try:
+            import imageio_ffmpeg
+            ffmpeg_bin = imageio_ffmpeg.get_ffmpeg_exe()
+        except Exception:
+            ffmpeg_bin = None
+
+    if ffmpeg_bin:
+        cmd = [
+            ffmpeg_bin,
+            "-y",
+            "-i", video_path,
+            "-c:v", "libx264",
+            "-preset", "ultrafast",
+            "-pix_fmt", "yuv420p",
+            "-movflags", "+faststart",
+            "-an",
+            preview_path,
+        ]
+        try:
+            subprocess.run(
+                cmd,
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=30,
+            )
+            if os.path.isfile(preview_path) and os.path.getsize(preview_path) > 0:
+                return preview_path
+        except Exception:
+            pass
+
+    return video_path
+
+
 def inspect_video_metadata(video_path, file_name, file_size_bytes):
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -311,8 +371,10 @@ def inspect_video_metadata(video_path, file_name, file_size_bytes):
         width = max(0, int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
         height = max(0, int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         duration = total_frames / fps if fps > 0 else 0.0
+        preview_path = create_browser_preview_video(video_path)
         return {
             "path": video_path,
+            "preview_path": preview_path,
             "name": file_name,
             "size_mb": file_size_bytes / (1024 * 1024),
             "fps": fps,
@@ -2308,7 +2370,9 @@ def render_upload_page():
     prev_col, ctrl_col = st.columns([1.45, 1.0])
     with prev_col:
         render_section_header("Uploaded Video Preview")
-        st.video(meta["path"])
+        preview_file = meta.get("preview_path") or meta["path"]
+        with open(preview_file, "rb") as video_file:
+            st.video(video_file.read(), format="video/mp4")
 
     with ctrl_col:
         render_section_header("Analysis Configuration")
