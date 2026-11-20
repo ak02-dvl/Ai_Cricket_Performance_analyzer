@@ -16,6 +16,7 @@ import urllib.parse
 import urllib.request
 from copy import deepcopy
 
+import base64
 import cv2
 import streamlit as st
 
@@ -1465,6 +1466,21 @@ def build_technique_weakness_comparison_chart(scores_dict):
 # VIDEO PROCESSING PIPELINE EXECUTION (UNCHANGED ANALYZER LOGIC)
 # ============================================================
 
+def render_live_frame_b64(placeholder, rgb_frame):
+    """Render a resized RGB frame inline via Base64 to prevent Streamlit Cloud media 404s."""
+    bgr_frame = cv2.cvtColor(rgb_frame, cv2.COLOR_RGB2BGR)
+    ok, buffer = cv2.imencode(".jpg", bgr_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+    if not ok:
+        return
+    b64_str = base64.b64encode(buffer.tobytes()).decode("ascii")
+    placeholder.markdown(
+        f'<div style="display:flex;justify-content:center;background:#070D19;border-radius:12px;padding:6px;border:1px solid rgba(96,165,250,0.18);">'
+        f'<img src="data:image/jpeg;base64,{b64_str}" style="max-width:100%;max-height:62vh;border-radius:8px;object-fit:contain;" />'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
 def execute_video_analysis_pipeline(video_meta, batting_stance):
     """
     Run CricketAnalyzer frame-by-frame with the exact original logic,
@@ -1773,11 +1789,7 @@ def execute_video_analysis_pipeline(video_meta, batting_stance):
             display_frame = cv2.cvtColor(display_output, cv2.COLOR_BGR2RGB)
             last_annotated_rgb = display_frame
 
-            video_placeholder.image(
-                display_frame,
-                channels="RGB",
-                use_container_width=False,
-            )
+            render_live_frame_b64(video_placeholder, display_frame)
 
             # Live Telemetry Cards
             live_phase.metric("Current Phase", phase)
