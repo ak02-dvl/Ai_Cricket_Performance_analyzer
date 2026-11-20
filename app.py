@@ -408,8 +408,23 @@ def download_video_from_url(video_url, temp_dir):
     try:
         import yt_dlp
         out_template = os.path.join(temp_dir, "%(title).60s.%(ext)s")
+
+        # Check if YouTube cookies are configured in Streamlit Secrets
+        cookie_file = None
+        try:
+            cookies_txt = st.secrets.get("YOUTUBE_COOKIES", "")
+            if cookies_txt and str(cookies_txt).strip():
+                cookie_file = os.path.join(temp_dir, "yt_cookies.txt")
+                with open(cookie_file, "w", encoding="utf-8") as cf:
+                    cf.write(str(cookies_txt))
+        except Exception:
+            cookie_file = None
+
+        # Use cookie-compatible clients when cookies exist, otherwise mobile/embedded fallbacks
+        clients = ["web", "mweb"] if cookie_file else ["ios", "mweb", "tv_embedded"]
+
         ydl_opts = {
-            "format": "bestvideo[ext=mp4][height<=1080]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+            "format": "bv*+ba/b",
             "merge_output_format": "mp4",
             "outtmpl": out_template,
             "noplaylist": True,
@@ -427,21 +442,12 @@ def download_video_from_url(video_url, temp_dir):
             },
             "extractor_args": {
                 "youtube": {
-                    "player_client": ["ios", "mweb", "tv_embedded"],
+                    "player_client": clients,
                 }
             },
         }
-
-        # Optional cookies from Streamlit Secrets to bypass cloud datacenter IP 403 blocks
-        try:
-            cookies_txt = st.secrets.get("YOUTUBE_COOKIES", "")
-            if cookies_txt and str(cookies_txt).strip():
-                cookie_file = os.path.join(temp_dir, "yt_cookies.txt")
-                with open(cookie_file, "w", encoding="utf-8") as cf:
-                    cf.write(str(cookies_txt))
-                ydl_opts["cookiefile"] = cookie_file
-        except Exception:
-            pass
+        if cookie_file:
+            ydl_opts["cookiefile"] = cookie_file
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.extract_info(clean_url, download=True)
@@ -463,11 +469,6 @@ def download_video_from_url(video_url, temp_dir):
 
     # Do not fall back to raw HTML download for YouTube/social URLs
     if is_youtube_or_social:
-        if yt_error and "403" in yt_error:
-            raise RuntimeError(
-                "YouTube blocked the cloud server IP (HTTP 403 Forbidden). "
-                "Add YOUTUBE_COOKIES in Streamlit Secrets, paste a Google Drive share link, or upload the MP4 file directly."
-            )
         raise RuntimeError(f"YouTube/web video download failed: {yt_error or 'No playable stream found.'}")
 
     # 2. Direct HTTP/HTTPS video file download (.mp4, .avi, .mov, Google Drive)
