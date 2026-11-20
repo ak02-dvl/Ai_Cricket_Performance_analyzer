@@ -1,0 +1,439 @@
+{
+  "video_name": "rohit.mp4",
+  "source_video": {
+    "fps": 30.0,
+    "total_frames": 264,
+    "width": 476,
+    "height": 848
+  },
+  "frames_processed": 134,
+  "analysis_frames": 26,
+  "ball_detected_frames": 27,
+  "impact_count": 1,
+  "impact_events": [
+    {
+      "impact_frame": 123,
+      "confirmation_frame": 123,
+      "phase": "Impact",
+      "shot": "Shot Played",
+      "score": 50.7,
+      "evidence_status": "Impact estimated from fresh bat-ball bounding-box overlap"
+    }
+  ],
+  "stop_reason": "Confirmed impact + stable completed shot",
+  "final_phase": "Impact",
+  "final_shot": "Shot Played",
+  "final_score": 50.7,
+  "swing_summary": {
+    "status": "Measured",
+    "samples": 21,
+    "peak_wrist_motion_per_frame": 0.178,
+    "average_wrist_motion_per_frame": 0.0451,
+    "median_wrist_motion_per_frame": 0.0389,
+    "tracked_wrist": "left",
+    "samples_by_phase": {
+      "downswing": 9,
+      "impact": 1,
+      "follow through": 11
+    },
+    "note": "Experimental normalized wrist displacement per source frame. Not actual bat speed or a validated coaching score.",
+    "motion_reliability": {
+      "status": "Evaluated",
+      "raw_sample_count": 21,
+      "candidate_spike_count": 0,
+      "candidate_source_frames": [],
+      "filtered_sample_count": 21,
+      "filtered_average_wrist_motion_per_frame": 0.0451,
+      "filtered_median_wrist_motion_per_frame": 0.0389,
+      "robust_peak_wrist_motion_per_frame": 0.0653,
+      "note": "Experimental phase-local spike detection. Flagged movement may represent genuine rapid motion. Filtering does not change original measurements or batting scores."
+    },
+    "phase_analysis": {
+      "phases": {
+        "backlift": {
+          "label": "Backlift",
+          "status": "No qualifying samples",
+          "raw_samples": 0,
+          "candidate_spikes": 0,
+          "candidate_spike_frames": [],
+          "filtered_samples": 0,
+          "raw_peak_wrist_motion_per_frame": null,
+          "raw_peak_source_frame": null,
+          "filtered_average_wrist_motion_per_frame": null,
+          "filtered_median_wrist_motion_per_frame": null,
+          "robust_peak_wrist_motion_per_frame": null
+        },
+        "downswing": {
+          "label": "Downswing",
+          "status": "Measured",
+          "raw_samples": 9,
+          "candidate_spikes": 0,
+          "candidate_spike_frames": [],
+          "filtered_samples": 9,
+          "raw_peak_wrist_motion_per_frame": 0.178,
+          "raw_peak_source_frame": 117,
+          "filtered_average_wrist_motion_per_frame": 0.0514,
+          "filtered_median_wrist_motion_per_frame": 0.0475,
+          "robust_peak_wrist_motion_per_frame": 0.0872
+        },
+        "impact": {
+          "label": "Impact",
+          "status": "Limited samples",
+          "raw_samples": 1,
+          "candidate_spikes": 0,
+          "candidate_spike_frames": [],
+          "filtered_samples": 1,
+          "raw_peak_wrist_motion_per_frame": 0.0297,
+          "raw_peak_source_frame": 123,
+          "filtered_average_wrist_motion_per_frame": 0.0297,
+          "filtered_median_wrist_motion_per_frame": 0.0297,
+          "robust_peak_wrist_motion_per_frame": null
+        },
+        "follow through": {
+          "label": "Follow Through",
+          "status": "Measured",
+          "raw_samples": 11,
+          "candidate_spikes": 0,
+          "candidate_spike_frames": [],
+          "filtered_samples": 11,
+          "raw_peak_wrist_motion_per_frame": 0.099,
+          "raw_peak_source_frame": 127,
+          "filtered_average_wrist_motion_per_frame": 0.0414,
+          "filtered_median_wrist_motion_per_frame": 0.0389,
+          "robust_peak_wrist_motion_per_frame": 0.0653
+        }
+      },
+      "note": "Experimental phase-grouped normalized wrist motion. No samples does not mean no physical movement. Small sample counts and tracking spikes limit reliability. Not physical bat speed or a coaching score."
+    },
+    "impact_alignment": {
+      "status": "Swing sample labeled Impact at confirmed frame",
+      "confirmed_impact_frame": 123,
+      "inspection_window_frames": 8,
+      "qualifying_samples_in_window": 13,
+      "phase_of_sample_at_impact": "impact",
+      "nearest_impact_labeled_sample_frame": 123,
+      "impact_label_offset_frames": 0,
+      "samples_near_impact": [
+        {
+          "source_frame": 115,
+          "frames_from_impact": -8,
+          "phase_passed_to_swing": "downswing",
+          "wrist_motion_per_frame": 0.0546
+        },
+        {
+          "source_frame": 116,
+          "frames_from_impact": -7,
+          "phase_passed_to_swing": "downswing",
+          "wrist_motion_per_frame": 0.0149
+        },
+        {
+          "source_frame": 117,
+          "frames_from_impact": -6,
+          "phase_passed_to_swing": "downswing",
+          "wrist_motion_per_frame": 0.178
+        },
+        {
+          "source_frame": 122,
+          "frames_from_impact": -1,
+          "phase_passed_to_swing": "downswing",
+          "wrist_motion_per_frame": 0.0105
+        },
+        {
+          "source_frame": 123,
+          "frames_from_impact": 0,
+          "phase_passed_to_swing": "impact",
+          "wrist_motion_per_frame": 0.0297
+        },
+        {
+          "source_frame": 124,
+          "frames_from_impact": 1,
+          "phase_passed_to_swing": "follow through",
+          "wrist_motion_per_frame": 0.0432
+        },
+        {
+          "source_frame": 125,
+          "frames_from_impact": 2,
+          "phase_passed_to_swing": "follow through",
+          "wrist_motion_per_frame": 0.0389
+        },
+        {
+          "source_frame": 126,
+          "frames_from_impact": 3,
+          "phase_passed_to_swing": "follow through",
+          "wrist_motion_per_frame": 0.0618
+        },
+        {
+          "source_frame": 127,
+          "frames_from_impact": 4,
+          "phase_passed_to_swing": "follow through",
+          "wrist_motion_per_frame": 0.099
+        },
+        {
+          "source_frame": 128,
+          "frames_from_impact": 5,
+          "phase_passed_to_swing": "follow through",
+          "wrist_motion_per_frame": 0.0653
+        },
+        {
+          "source_frame": 129,
+          "frames_from_impact": 6,
+          "phase_passed_to_swing": "follow through",
+          "wrist_motion_per_frame": 0.0621
+        },
+        {
+          "source_frame": 130,
+          "frames_from_impact": 7,
+          "phase_passed_to_swing": "follow through",
+          "wrist_motion_per_frame": 0.0217
+        },
+        {
+          "source_frame": 131,
+          "frames_from_impact": 8,
+          "phase_passed_to_swing": "follow through",
+          "wrist_motion_per_frame": 0.0126
+        }
+      ],
+      "note": "Diagnostic only. Phase labels are those passed to SwingAnalyzer for qualifying motion samples. The confirmed impact event and existing phase logic are unchanged."
+    },
+    "phase_coverage": {
+      "status": "Evaluated",
+      "delivery_activation_frame": 104,
+      "phase_observation_frames": 31,
+      "other_observed_phases": {
+        "unknown": 5
+      },
+      "phases": {
+        "backlift": {
+          "status": "Not observed",
+          "observed_frames": 0,
+          "wrist_landmark_frames": 0,
+          "qualifying_motion_samples": 0,
+          "frames_without_motion_sample": 0,
+          "motion_sample_coverage_percent": null,
+          "first_observed_frame": null,
+          "last_observed_frame": null,
+          "unmatched_motion_sample_frames": [],
+          "explanation": "No analyzed frame received this phase label."
+        },
+        "downswing": {
+          "status": "Measured",
+          "observed_frames": 14,
+          "wrist_landmark_frames": 11,
+          "qualifying_motion_samples": 9,
+          "frames_without_motion_sample": 5,
+          "motion_sample_coverage_percent": 64.3,
+          "first_observed_frame": 109,
+          "last_observed_frame": 122,
+          "unmatched_motion_sample_frames": [],
+          "explanation": "At least three qualifying wrist-motion samples were recorded."
+        },
+        "impact": {
+          "status": "Limited evidence",
+          "observed_frames": 1,
+          "wrist_landmark_frames": 1,
+          "qualifying_motion_samples": 1,
+          "frames_without_motion_sample": 0,
+          "motion_sample_coverage_percent": 100.0,
+          "first_observed_frame": 123,
+          "last_observed_frame": 123,
+          "unmatched_motion_sample_frames": [],
+          "explanation": "Only one or two qualifying wrist-motion samples were recorded."
+        },
+        "follow through": {
+          "status": "Measured",
+          "observed_frames": 11,
+          "wrist_landmark_frames": 11,
+          "qualifying_motion_samples": 11,
+          "frames_without_motion_sample": 0,
+          "motion_sample_coverage_percent": 100.0,
+          "first_observed_frame": 124,
+          "last_observed_frame": 134,
+          "unmatched_motion_sample_frames": [],
+          "explanation": "At least three qualifying wrist-motion samples were recorded."
+        },
+        "recovery": {
+          "status": "Not observed",
+          "observed_frames": 0,
+          "wrist_landmark_frames": 0,
+          "qualifying_motion_samples": 0,
+          "frames_without_motion_sample": 0,
+          "motion_sample_coverage_percent": null,
+          "first_observed_frame": null,
+          "last_observed_frame": null,
+          "unmatched_motion_sample_frames": [],
+          "explanation": "No analyzed frame received this phase label."
+        }
+      },
+      "note": "Coverage is measured only for frames that reached post-impact-sync phase analysis after delivery activation. Frames failing earlier detection or pose stages are excluded. Missing samples do not prove missing physical movement. The report does not alter phase logic, measurements, or scores."
+    }
+  },
+  "final_report": {
+    "frame_number": 123,
+    "phase": "Impact",
+    "shot": "Shot Played",
+    "angles": {
+      "left_elbow": 100.28,
+      "left_knee": 170.7,
+      "right_knee": 131.62,
+      "left_shoulder": 62.42,
+      "left_hip": 104.92,
+      "right_hip": 106.11
+    },
+    "scores": {
+      "left_elbow": 10.6,
+      "left_knee": 68.6,
+      "right_knee": 63.2,
+      "left_shoulder": 100,
+      "left_hip": 29.8,
+      "right_hip": 32.2
+    },
+    "overall_score": 50.7,
+    "technique_score": 35.7,
+    "impact_frame": 123,
+    "impact_shot": "Shot Played",
+    "impact_phase": "Impact",
+    "impact_score": 50.7,
+    "mistakes": [
+      "Front elbow is too low.",
+      "Front knee is too straight.",
+      "Front shoulder is dropping."
+    ],
+    "ball": {
+      "box": [
+        146,
+        592,
+        170,
+        621
+      ],
+      "center": [
+        158.6081349076976,
+        624.9166016564222
+      ],
+      "confidence": 0.4291416108608246,
+      "area": 696,
+      "predicted": false,
+      "tracked": true,
+      "missing_frames": 0,
+      "velocity": [
+        -1.6819654742816028,
+        -65.4530067891583
+      ],
+      "speed": 65.47461420732677
+    },
+    "bat_ball_contact": {
+      "valid": true,
+      "contact": true,
+      "near_contact": true,
+      "distance": 0.0,
+      "iou": 0.0132,
+      "bat_confidence": 0.355,
+      "ball_confidence": 0.429,
+      "bat_center": [
+        198.5,
+        542.5
+      ],
+      "ball_center": [
+        158.0,
+        606.5
+      ],
+      "status": "BAT-BALL CONTACT"
+    },
+    "swing": {
+      "speed": "Low",
+      "direction": "Mostly Vertical",
+      "timing": "Impact Phase"
+    },
+    "footwork": {
+      "feedback": [
+        "\u2717 Keep your head over your body",
+        "\u2717 Front knee is too straight",
+        "\u2717 Back ankle not aligned with knee (single frame)",
+        "\u2013 Hip order: left hip is not screen-left of right hip (single frame)",
+        "\u2717 Improve body balance",
+        "\u2013 Back-foot movement: Noticeable recent ankle movement",
+        "\u2013 Hip-shift indicator: Feet too close for reliable hip-shift estimate",
+        "\u2013 Hip-center movement: Measured (experimental screen-relative hip motion)",
+        "\u2013 Batting stance: Right-handed"
+      ],
+      "footwork_score": 0,
+      "back_foot_motion": {
+        "status": "Noticeable recent ankle movement",
+        "relative_motion_per_frame": 0.1015,
+        "samples": 5
+      },
+      "hip_shift": {
+        "status": "Feet too close for reliable hip-shift estimate",
+        "relative_shift_per_frame": null,
+        "samples": 0,
+        "diagnostics": {
+          "ankle_separation_px": 39.87,
+          "leg_scale_px": 177.02,
+          "required_separation_px": 44.25,
+          "separation_ratio": 0.2252
+        }
+      },
+      "hip_motion": {
+        "status": "Measured (experimental screen-relative hip motion)",
+        "horizontal_shift_per_frame": 0.0127,
+        "samples": 5
+      },
+      "stance": {
+        "batting_stance": "Right-handed",
+        "stance_source": "User selection",
+        "front_leg": "left",
+        "back_leg": "right",
+        "screen_left_leg": "left",
+        "screen_right_leg": "right",
+        "ankle_horizontal_separation": 0.0539,
+        "geometry_status": "Screen left/right foot order observed",
+        "note": "Front/back labels assume a conventional batting stance. Existing technique scoring is not changed."
+      }
+    },
+    "impact": {
+      "detected": true,
+      "event": true,
+      "confidence": 35.5,
+      "confidence_kind": "fresh detection overlap evidence",
+      "distance": 0.0,
+      "wrist_speed": 0.0,
+      "ball_speed": 0.0,
+      "impact_count": 1,
+      "cooldown": 15,
+      "impact_frame": 123,
+      "confirmation_frame": 123,
+      "overlap": true,
+      "overlap_area": 232.0,
+      "status": "Impact estimated from fresh bat-ball bounding-box overlap",
+      "input_phase": "Downswing",
+      "bat_input": {
+        "accepted": true,
+        "reason": "accepted",
+        "confidence": 0.35539954900741577,
+        "box": [
+          162.0,
+          425.0,
+          235.0,
+          660.0
+        ]
+      },
+      "ball_input": {
+        "accepted": true,
+        "reason": "accepted",
+        "confidence": 0.4291416108608246,
+        "box": [
+          146.0,
+          592.0,
+          170.0,
+          621.0
+        ]
+      },
+      "display": true
+    },
+    "analysis_status": "Analysis Working",
+    "batsman_detected": true,
+    "pose_detected": true,
+    "landmarks_detected": true,
+    "ball_detected": true,
+    "tracking": true
+  }
+}

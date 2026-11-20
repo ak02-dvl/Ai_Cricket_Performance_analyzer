@@ -1,0 +1,33 @@
+frame,phase,shot,analysis_status,left_elbow,right_elbow,left_shoulder,right_shoulder,left_knee,right_knee,left_hip,right_hip,impact_event,impact_frame
+15,Stance,Preparing,Analysis Working,118.74,,10.19,,143.21,136.74,120.07,117.35,False,
+16,Backlift,Preparing,Analysis Working,120.48,,10.1,,145.55,138.2,121.3,118.24,False,
+17,Backlift,Preparing,Analysis Working,122.55,,10.19,,148.08,139.78,122.46,119.18,False,
+18,Backlift,Preparing,Analysis Working,124.36,,10.66,,150.99,141.93,123.14,120.5,False,
+19,Backlift,Preparing,Analysis Working,125.69,,10.85,,153.34,142.72,123.3,120.74,False,
+20,Backlift,Preparing,Analysis Working,128.36,,11.7,,153.0,142.1,121.65,119.38,False,
+21,Backlift,Preparing,Analysis Working,130.76,,12.28,,152.44,139.59,119.81,117.22,False,
+22,Backlift,Preparing,Analysis Working,130.54,,13.16,,149.86,134.22,116.84,113.34,False,
+23,Backlift,Preparing,Analysis Working,129.26,,13.82,,145.29,127.18,113.45,110.22,False,
+24,Downswing,Controlled Shot,Analysis Working,127.09,,14.02,,140.73,119.94,110.02,107.3,False,
+25,Downswing,Controlled Shot,Analysis Working,123.14,,14.42,,136.14,113.82,106.67,104.58,False,
+26,Downswing,Controlled Shot,Analysis Working,112.22,,15.14,,134.57,111.81,104.56,103.95,False,
+27,Downswing,Controlled Shot,Analysis Working,99.27,,16.01,,137.06,112.95,105.0,105.13,False,
+28,Downswing,Controlled Shot,Analysis Working,87.99,,18.25,,143.44,115.61,107.52,106.66,False,
+29,Downswing,Controlled Shot,Analysis Working,79.11,,20.18,,150.25,121.73,110.47,110.16,False,
+30,Downswing,Controlled Shot,Analysis Working,73.82,,24.14,,157.88,128.8,114.23,112.91,False,
+31,Downswing,Controlled Shot,Analysis Working,69.26,,28.75,,164.05,136.27,117.47,115.46,False,
+32,Downswing,Controlled Shot,Analysis Working,73.01,,32.44,,170.33,142.55,121.78,117.28,False,
+33,Downswing,Controlled Shot,Analysis Working,86.72,,35.16,,174.3,147.6,126.34,118.48,False,
+34,Downswing,Controlled Shot,Analysis Working,98.83,,32.98,,175.48,152.01,131.44,119.73,False,
+35,Impact,Shot Played,Analysis Working,105.09,,51.99,,174.75,157.3,135.43,122.36,True,35
+36,Follow Through,Shot Played,Analysis Working,110.71,,71.23,,174.72,162.56,139.7,125.32,False,35
+37,Follow Through,Shot Played,Analysis Working,114.96,,75.86,,173.64,166.63,143.59,127.85,False,35
+38,Follow Through,Shot Played,Analysis Working,113.87,,76.31,,173.66,170.19,147.6,130.09,False,35
+39,Follow Through,Shot Played,Analysis Working,103.19,3.33,75.28,7.51,173.73,173.75,151.58,132.93,False,35
+40,Follow Through,Shot Played,Analysis Working,85.99,5.09,73.69,10.65,173.91,175.64,155.08,135.5,False,35
+41,Follow Through,Shot Played,Analysis Working,88.87,53.98,93.67,60.36,174.97,175.67,157.94,138.23,False,35
+42,Follow Through,Shot Played,Analysis Working,92.91,59.06,86.13,66.06,175.87,175.07,161.07,140.36,False,35
+43,Follow Through,Shot Played,Analysis Working,99.27,50.35,79.73,56.92,176.12,173.57,164.55,141.48,False,35
+44,Follow Through,Shot Played,Analysis Working,107.2,46.09,88.22,52.97,176.8,172.73,167.21,142.83,False,35
+45,Follow Through,Shot Played,Analysis Working,112.39,40.52,92.8,47.87,176.99,171.45,170.02,143.99,False,35
+46,Follow Through,Shot Played,Analysis Working,120.78,,97.09,,176.53,169.48,171.26,144.44,False,

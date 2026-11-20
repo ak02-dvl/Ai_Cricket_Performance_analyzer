@@ -1,0 +1,15 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+Thumbs.db
+
+# Ignore local test videos and generated outputs
+uploads/*.mp4
+uploads/*.avi
+uploads/*.mov
+output_analyzed.mp4
+*_report.pdf
+*_summary.json

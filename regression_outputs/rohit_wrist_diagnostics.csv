@@ -1,0 +1,21 @@
+frame,phase,shot,analysis_status,left_elbow,right_elbow,left_shoulder,right_shoulder,left_knee,right_knee,left_hip,right_hip,impact_event,impact_frame,wrist_arm,wrist_relative_y,wrist_signal_available,wrist_up_counter,wrist_down_counter
+104,Unknown,Preparing,Analysis Working,122.5,,21.21,,139.88,128.84,121.25,120.43,False,,left,0.19616302847862244,True,0,0
+105,Stance,Preparing,Analysis Working,121.02,,22.21,,138.45,125.95,118.56,117.72,False,,left,0.20931950211524963,True,0,1
+106,Stance,Preparing,Analysis Working,119.73,,23.11,,136.69,122.08,115.95,114.25,False,,left,0.2124081552028656,True,0,0
+107,Stance,Preparing,Analysis Working,117.79,,23.75,,134.11,118.92,112.96,111.39,False,,left,0.2054060697555542,True,1,0
+108,Backlift,Preparing,Analysis Working,113.86,,24.07,,130.77,115.73,109.9,109.31,False,,left,0.19472259283065796,True,2,0
+109,Backlift,Preparing,Analysis Working,108.77,,24.2,,129.05,114.53,108.21,108.37,False,,left,0.17580628395080566,True,3,0
+110,Backlift,Preparing,Analysis Working,104.07,,23.85,,128.85,113.82,107.62,108.47,False,,left,0.1776290237903595,True,0,0
+111,Backlift,Preparing,Analysis Working,101.74,,23.56,,129.48,113.61,107.86,108.99,False,,left,0.17950592935085297,True,0,0
+112,Backlift,Preparing,Analysis Working,94.31,,23.64,,129.2,113.76,107.94,109.65,False,,left,0.1594729870557785,True,1,0
+113,Backlift,Preparing,Analysis Working,82.47,,24.34,,129.58,117.2,107.74,112.83,False,,left,0.11625500023365021,True,2,0
+114,Backlift,Preparing,Analysis Working,73.61,,25.79,,130.04,119.72,107.53,115.52,False,,left,0.12248075008392334,True,0,1
+115,Backlift,Preparing,Analysis Working,67.72,,27.07,,132.01,122.34,107.74,117.43,False,,left,0.09490884840488434,True,1,0
+116,Backlift,Preparing,Analysis Working,62.79,,28.12,,135.52,124.39,108.89,118.71,False,,left,0.09055781364440918,True,0,0
+117,Backlift,Preparing,Analysis Working,59.33,,34.43,,140.82,127.26,110.68,119.76,False,,left,0.0014578402042388916,True,1,0
+118,Backlift,Preparing,Analysis Working,,,38.29,,145.14,133.99,114.64,122.52,False,,left,,False,0,0
+119,Backlift,Preparing,Analysis Working,,,34.92,,151.9,140.72,117.54,125.99,False,,left,,False,0,0
+120,Backlift,Preparing,Analysis Working,,,39.29,,158.53,143.39,119.76,126.7,False,,left,,False,0,0
+121,Backlift,Preparing,Analysis Working,67.25,,42.62,,165.59,147.24,123.08,127.23,False,,left,0.20988203585147858,True,0,0
+122,Backlift,Preparing,Analysis Working,79.86,,46.09,,170.61,150.28,126.7,127.82,False,,left,0.22935913503170013,True,0,1
+123,Impact,Shot Played,Analysis Working,99.25,,51.78,,174.48,150.57,129.56,126.6,True,123,left,0.22536234557628632,True,0,0
