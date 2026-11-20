@@ -7,3 +7,5 @@ reportlab
 plotly
 pandas
 Pillow
+imageio-ffmpeg
+yt-dlp
