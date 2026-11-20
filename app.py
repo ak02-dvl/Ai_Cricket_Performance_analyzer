@@ -16,9 +16,6 @@ import urllib.parse
 import urllib.request
 from copy import deepcopy
 
-import shutil
-import subprocess
-import base64
 import cv2
 import streamlit as st
 
@@ -301,64 +298,6 @@ def navigate_to(section_name):
     st.session_state["active_nav"] = section_name
 
 
-def create_browser_preview_video(video_path):
-    """Create an H.264 MP4 preview for st.video() without modifying the original file."""
-    cap = cv2.VideoCapture(video_path)
-    if not cap.isOpened():
-        return video_path
-    try:
-        fourcc_int = int(cap.get(cv2.CAP_PROP_FOURCC))
-        codec = "".join([chr((fourcc_int >> 8 * i) & 0xFF) for i in range(4)]).strip().lower()
-    finally:
-        cap.release()
-
-    # Already H.264 — browsers play it natively without re-encoding
-    if codec in ("avc1", "h264", "x264") and video_path.lower().endswith((".mp4", ".mov")):
-        return video_path
-
-    preview_path = os.path.join(
-        os.path.dirname(video_path),
-        f"preview_{os.path.splitext(os.path.basename(video_path))[0]}.mp4",
-    )
-    if os.path.isfile(preview_path) and os.path.getsize(preview_path) > 0:
-        return preview_path
-
-    ffmpeg_bin = shutil.which("ffmpeg")
-    if not ffmpeg_bin:
-        try:
-            import imageio_ffmpeg
-            ffmpeg_bin = imageio_ffmpeg.get_ffmpeg_exe()
-        except Exception:
-            ffmpeg_bin = None
-
-    if ffmpeg_bin:
-        cmd = [
-            ffmpeg_bin,
-            "-y",
-            "-i", video_path,
-            "-c:v", "libx264",
-            "-preset", "ultrafast",
-            "-pix_fmt", "yuv420p",
-            "-movflags", "+faststart",
-            "-an",
-            preview_path,
-        ]
-        try:
-            subprocess.run(
-                cmd,
-                check=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                timeout=30,
-            )
-            if os.path.isfile(preview_path) and os.path.getsize(preview_path) > 0:
-                return preview_path
-        except Exception:
-            pass
-
-    return video_path
-
-
 def inspect_video_metadata(video_path, file_name, file_size_bytes):
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -371,10 +310,8 @@ def inspect_video_metadata(video_path, file_name, file_size_bytes):
         width = max(0, int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
         height = max(0, int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         duration = total_frames / fps if fps > 0 else 0.0
-        preview_path = create_browser_preview_video(video_path)
         return {
             "path": video_path,
-            "preview_path": preview_path,
             "name": file_name,
             "size_mb": file_size_bytes / (1024 * 1024),
             "fps": fps,
@@ -390,11 +327,6 @@ def inspect_video_metadata(video_path, file_name, file_size_bytes):
 def download_video_from_url(video_url, temp_dir):
     """Download a video from a direct URL, Google Drive share link, or YouTube/yt-dlp URL."""
     clean_url = video_url.strip()
-    if not clean_url.lower().startswith(("http://", "https://")):
-        raise RuntimeError(
-            "Invalid link. Please paste a valid video URL starting with https:// (not an error message)."
-        )
-
     parsed = urllib.parse.urlparse(clean_url)
     host = parsed.netloc.lower()
     is_youtube_or_social = any(
@@ -413,81 +345,38 @@ def download_video_from_url(video_url, temp_dir):
     try:
         import yt_dlp
         out_template = os.path.join(temp_dir, "%(title).60s.%(ext)s")
-
-        # Check if YouTube cookies are configured in Streamlit Secrets
-        cookie_file = None
-        try:
-            cookies_txt = st.secrets.get("YOUTUBE_COOKIES", "")
-            if cookies_txt and str(cookies_txt).strip():
-                cookie_file = os.path.join(temp_dir, "yt_cookies.txt")
-                with open(cookie_file, "w", encoding="utf-8") as cf:
-                    cf.write(str(cookies_txt))
-        except Exception:
-            cookie_file = None
-
-        # Try cookie-authenticated web clients first, then fall back to cookieless clients
-        attempts = []
-        if cookie_file:
-            attempts.append((["web", "mweb", "tv"], cookie_file))
-        attempts.append((["tv_embedded", "ios", "android", "mweb"], None))
-
-        for clients, active_cookie in attempts:
-            ydl_opts = {
-                "format": "bv*+ba/b",
-                "merge_output_format": "mp4",
-                "outtmpl": out_template,
-                "noplaylist": True,
-                "quiet": True,
-                "no_warnings": True,
-                "geo_bypass": True,
-                "retries": 3,
-                "fragment_retries": 3,
-                "js_runtimes": {"node": {}},
-                "remote_components": ["ejs:github"],
-                "http_headers": {
-                    "User-Agent": (
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                        "AppleWebKit/537.36 (KHTML, like Gecko) "
-                        "Chrome/131.0.0.0 Safari/537.36"
-                    ),
-                },
-                "extractor_args": {
-                    "youtube": {
-                        "player_client": clients,
-                    }
-                },
-            }
-            if active_cookie:
-                ydl_opts["cookiefile"] = active_cookie
-
-            try:
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    ydl.extract_info(clean_url, download=True)
-                    candidates = [
-                        os.path.join(temp_dir, f)
-                        for f in os.listdir(temp_dir)
-                        if os.path.isfile(os.path.join(temp_dir, f))
-                        and not f.endswith(".part")
-                        and f != "yt_cookies.txt"
-                    ]
-                    if candidates:
-                        downloaded_path = max(candidates, key=os.path.getsize)
-                        safe_name = os.path.basename(downloaded_path)
-                        return downloaded_path, safe_name, os.path.getsize(downloaded_path)
-            except Exception as exc:
-                yt_error = str(exc)
-                continue
+        ydl_opts = {
+            "format": "best[vcodec!=none][acodec!=none]/best[vcodec!=none]/best",
+            "outtmpl": out_template,
+            "noplaylist": True,
+            "quiet": True,
+            "no_warnings": True,
+            "extractor_args": {
+                "youtube": {
+                    "player_client": ["android", "tv_embedded", "web"],
+                }
+            },
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.extract_info(clean_url, download=True)
+            # Find the actual downloaded/merged video file in temp_dir
+            candidates = [
+                os.path.join(temp_dir, f)
+                for f in os.listdir(temp_dir)
+                if os.path.isfile(os.path.join(temp_dir, f)) and not f.endswith(".part")
+            ]
+            if candidates:
+                downloaded_path = max(candidates, key=os.path.getsize)
+                safe_name = os.path.basename(downloaded_path)
+                return downloaded_path, safe_name, os.path.getsize(downloaded_path)
     except ImportError:
-        yt_error = "yt-dlp is not installed. Run: pip install yt-dlp[default]"
+        yt_error = "yt-dlp is not installed. Run: pip install yt-dlp"
     except Exception as exc:
         yt_error = str(exc)
 
     # Do not fall back to raw HTML download for YouTube/social URLs
     if is_youtube_or_social:
-        raise RuntimeError(
-            f"YouTube/web video download failed: {yt_error or 'No playable stream found.'} "
-            "— Tip: If YouTube blocks this clip on the cloud server, paste a Google Drive share link instead."
-        )
+        raise RuntimeError(f"YouTube/web video download failed: {yt_error or 'No playable stream found.'}")
 
     # 2. Direct HTTP/HTTPS video file download (.mp4, .avi, .mov, Google Drive)
     url_basename = os.path.basename(parsed.path)
@@ -1576,21 +1465,6 @@ def build_technique_weakness_comparison_chart(scores_dict):
 # VIDEO PROCESSING PIPELINE EXECUTION (UNCHANGED ANALYZER LOGIC)
 # ============================================================
 
-def render_live_frame_b64(placeholder, rgb_frame):
-    """Render a resized RGB frame inline via Base64 to prevent Streamlit Cloud media 404s."""
-    bgr_frame = cv2.cvtColor(rgb_frame, cv2.COLOR_RGB2BGR)
-    ok, buffer = cv2.imencode(".jpg", bgr_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
-    if not ok:
-        return
-    b64_str = base64.b64encode(buffer.tobytes()).decode("ascii")
-    placeholder.markdown(
-        f'<div style="display:flex;justify-content:center;background:#070D19;border-radius:12px;padding:6px;border:1px solid rgba(96,165,250,0.18);">'
-        f'<img src="data:image/jpeg;base64,{b64_str}" style="max-width:100%;max-height:62vh;border-radius:8px;object-fit:contain;" />'
-        f'</div>',
-        unsafe_allow_html=True,
-    )
-
-
 def execute_video_analysis_pipeline(video_meta, batting_stance):
     """
     Run CricketAnalyzer frame-by-frame with the exact original logic,
@@ -1899,7 +1773,11 @@ def execute_video_analysis_pipeline(video_meta, batting_stance):
             display_frame = cv2.cvtColor(display_output, cv2.COLOR_BGR2RGB)
             last_annotated_rgb = display_frame
 
-            render_live_frame_b64(video_placeholder, display_frame)
+            video_placeholder.image(
+                display_frame,
+                channels="RGB",
+                use_container_width=False,
+            )
 
             # Live Telemetry Cards
             live_phase.metric("Current Phase", phase)
@@ -2418,9 +2296,7 @@ def render_upload_page():
     prev_col, ctrl_col = st.columns([1.45, 1.0])
     with prev_col:
         render_section_header("Uploaded Video Preview")
-        preview_file = meta.get("preview_path") or meta["path"]
-        with open(preview_file, "rb") as video_file:
-            st.video(video_file.read(), format="video/mp4")
+        st.video(meta["path"])
 
     with ctrl_col:
         render_section_header("Analysis Configuration")
